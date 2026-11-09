@@ -13,16 +13,15 @@ api_key = os.environ.get("OPENROUTER_API_KEY")
 if api_key is None:
     raise ValueError("OPENROUTER_API_KEY environment variable not found")
 
+messages = [
+    {"role": "user", "content": args.user_prompt},
+]
+
 client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
 response = client.chat.completions.create(
     model="openrouter/free",
-    messages=[
-        {
-            "role": "user",
-            "content": args.user_prompt,
-        }
-    ],
+    messages=messages,
 )
 
 if response.usage is None:
