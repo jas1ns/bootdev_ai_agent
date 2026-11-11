@@ -4,7 +4,7 @@ import json
 from dotenv import load_dotenv
 from openai import OpenAI
 from prompts import system_prompt
-from call_function import available_functions
+from call_function import available_functions, call_function
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Chatbot")
@@ -29,13 +29,16 @@ def main() -> None:
         model="openrouter/free",
         messages=messages,
         tools=available_functions,
-        temperature=0,
+        temperature=0.2,
     )
     message = response.choices[0].message
     if message.tool_calls:
         for tool_call in message.tool_calls:
-            function_args = json.loads(tool_call.function.arguments or "{}")
-            print(f"Calling function: {tool_call.function.name}({function_args})")
+            result_message = call_function(tool_call, verbose=args.verbose)
+            if not result_message.get("content"):
+                raise RuntimeError("Tool message content is empty")
+            if args.verbose:
+                print(f"-> {result_message['content']}")
             
     if response.usage is None:
         raise RuntimeError("Usage information is missing from the response")

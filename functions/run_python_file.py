@@ -47,3 +47,28 @@ def run_python_file(
     except Exception as e:
         return f"Error: executing Python file: {e}"
 
+        
+schema_run_python_file = {
+    "type": "function",
+    "function": {
+        "name": "run_python_file",
+        "description": "Runs a Python file located within the working directory. The file path should be relative to the working directory. The function returns the standard output (STDOUT), standard error (STDERR), and the return code of the process. The maximum execution time is 30 seconds.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the Python file to execute, relative to the working directory",
+                },
+                "args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Optional list of arguments to pass to the Python script",
+                }
+            },
+            "required": ["file_path"]
+        },
+    },
+}
